@@ -18,7 +18,22 @@ export default class World {
   setRoom() {
     this.room = {};
     this.room.model = this.resources.items.roomModel.scene;
+    this.room.texture = this.resources.items.bakedNeuralTexture;
+    this.room.texture.encoding = THREE.sRGBEncoding;
+    this.room.texture.flipY = false;
+    this.room.material = new THREE.MeshBasicMaterial({
+      map: this.room.texture,
+    });
+    this.room.model.traverse((_child) => {
+      if (_child instanceof THREE.Mesh) {
+        _child.material = this.room.material;
+      }
+    });
+
+    // testing
     console.log(this.room.model);
+    console.log(this.resources.items.bakedNeuralTexture);
+
     //add model room vào scene
     this.scene.add(this.room.model);
 
