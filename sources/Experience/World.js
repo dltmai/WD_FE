@@ -1,5 +1,11 @@
 import * as THREE from "three";
 import Experience from "./Experience.js";
+import Baked from "./Baked.js";
+import GoogleLeds from "./GoogleLeds.js";
+
+import TopChair from "./TopChair.js";
+
+import Screen from "./Screen.js";
 
 export default class World {
   constructor(_options) {
@@ -10,41 +16,47 @@ export default class World {
 
     this.resources.on("groupEnd", (_group) => {
       if (_group.name === "base") {
-        this.setRoom();
+        this.setBaked();
+        this.setGoogleLeds();
+
+        this.setTopChair();
+        this.setScreens();
       }
     });
   }
 
-  setRoom() {
-    this.room = {};
-    this.room.model = this.resources.items.roomModel.scene;
-    this.room.texture = this.resources.items.bakedNeuralTexture;
-    this.room.texture.encoding = THREE.sRGBEncoding;
-    this.room.texture.flipY = false;
-    this.room.material = new THREE.MeshBasicMaterial({
-      map: this.room.texture,
-    });
-    this.room.model.traverse((_child) => {
-      if (_child instanceof THREE.Mesh) {
-        _child.material = this.room.material;
-      }
-    });
+  setBaked() {
+    this.baked = new Baked();
+  }
 
-    // testing
-    console.log(this.room.model);
-    console.log(this.resources.items.bakedNeuralTexture);
+  setGoogleLeds() {
+    this.googleLeds = new GoogleLeds();
+  }
 
-    //add model room vào scene
-    this.scene.add(this.room.model);
+  setTopChair() {
+    this.topChair = new TopChair();
+  }
 
-    const directionalLight = new THREE.DirectionalLight("#ffffff", 3);
-    directionalLight.position.set(5, 5, 5);
-    this.scene.add(directionalLight);
+  setScreens() {
+    this.pcScreen = new Screen(
+      this.resources.items.pcScreenModel.scene.children[0],
+      "/assets/image.png"
+    );
+    this.macScreen = new Screen(
+      this.resources.items.macScreenModel.scene.children[0],
+      "/assets/video.mp4"
+    );
   }
 
   resize() {}
 
-  update() {}
+  update() {
+    if (this.googleLeds) this.googleLeds.update();
+    if (this.pcScreen) this.pcScreen.update();
+    if (this.macScreen) this.macScreen.update();
+    if (this.topChair) this.topChair.update();
+    //if (this.bouncingLogo) this.bouncingLogo.update();
+  }
 
   destroy() {}
 }
