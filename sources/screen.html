@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Windows Interface</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      .desktop-background {
+        background-image: url("/public/assets/wallpaper.jpg");
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+      }
+
+      /* Thêm đổ bóng cho text để dễ đọc trên mọi hình nền */
+      .text-shadow {
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+      }
+
+      /* Hiệu ứng highlight khi chọn icon */
+      .icon-highlight {
+        background-color: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(4px);
+      }
+
+      .popup-window {
+        display: none;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 1000;
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      }
+
+      .popup-window.active {
+        display: block;
+      }
+
+      .overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 999;
+      }
+
+      .overlay.active {
+        display: block;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Desktop với hình nền -->
+    <div class="desktop-background min-h-screen pb-12">
+      <!-- Desktop Icons - Vertical Layout -->
+      <div class="p-4 flex flex-col space-y-4 w-32">
+        <!-- Pomodoro -->
+        <div
+          class="flex flex-col items-center cursor-pointer hover:icon-highlight p-2 rounded-lg group"
+          data-app="pomodoro"
+        >
+          <div class="p-2">
+            <svg
+              class="w-12 h-12 text-white drop-shadow-lg"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
+            </svg>
+          </div>
+          <p
+            class="text-white text-sm text-center text-shadow group-hover:bg-blue-500/70"
+          >
+            Pomodoro
+          </p>
+        </div>
+
+        <!-- Note -->
+        <div
+          class="flex flex-col items-center cursor-pointer hover:icon-highlight p-2 rounded-lg group"
+          data-app="note"
+        >
+          <div class="p-2">
+            <svg
+              class="w-12 h-12 text-white drop-shadow-lg"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+              />
+            </svg>
+          </div>
+          <p
+            class="text-white text-sm text-center text-shadow group-hover:bg-blue-500/70"
+          >
+            Notes
+          </p>
+        </div>
+
+        <!-- Todo List -->
+        <div
+          class="flex flex-col items-center cursor-pointer hover:icon-highlight p-2 rounded-lg group"
+          data-app="todo"
+        >
+          <div class="p-2">
+            <svg
+              class="w-12 h-12 text-white drop-shadow-lg"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"
+              />
+            </svg>
+          </div>
+          <p
+            class="text-white text-sm text-center text-shadow group-hover:bg-blue-500/70"
+          >
+            Todo
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Taskbar -->
+    <div
+      class="fixed bottom-0 left-0 right-0 bg-[#202020] h-12 flex items-center justify-between px-2"
+    >
+      <!-- Start Button and Apps -->
+      <div class="flex items-center space-x-2">
+        <!-- Windows Start Button -->
+        <button class="p-2 hover:bg-gray-700 rounded-md" id="startButton">
+          <svg
+            class="w-6 h-6 text-white"
+            viewBox="0 0 24 24"
+            fill="currentColor"
+          >
+            <path
+              d="M11 21H4a1 1 0 01-1-1v-7h8v8zm0-10H3V4a1 1 0 011-1h7v8zm2-8h7a1 1 0 011 1v7h-8V3zm8 10v7a1 1 0 01-1 1h-7v-8h8z"
+            />
+          </svg>
+        </button>
+
+        <!-- Search -->
+        <div class="bg-gray-700 rounded-md flex items-center px-3 py-1">
+          <svg
+            class="w-4 h-4 text-gray-400"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+            />
+          </svg>
+          <input
+            type="text"
+            placeholder="Tìm kiếm"
+            class="bg-transparent border-none text-white text-sm focus:outline-none px-2 w-40"
+          />
+        </div>
+      </div>
+
+      <!-- System Tray -->
+      <div class="flex items-center space-x-4 text-white/90">
+        <!-- Network icon -->
+        <svg
+          class="w-4 h-4"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M8.111 16.404a5.5 5.5 0 017.778 0M12 20h.01m-7.08-7.071c3.904-3.905 10.236-3.905 14.141 0M1.394 9.393c5.857-5.857 15.355-5.857 21.213 0"
+          />
+        </svg>
+
+        <!-- Volume icon -->
+        <svg
+          class="w-4 h-4"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"
+          />
+        </svg>
+
+        <!-- Battery icon -->
+        <div class="flex items-center space-x-1">
+          <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+            <path
+              d="M20,10V8A2,2 0 0,0 18,6H4A2,2 0 0,0 2,8V16A2,2 0 0,0 4,18H18A2,2 0 0,0 20,16V14H22V10H20M18,16H4V8H18V16Z"
+            />
+          </svg>
+          <span class="text-xs">85%</span>
+        </div>
+
+        <!-- Time -->
+        <div class="px-3" id="current-time">12:00</div>
+      </div>
+    </div>
+
+    <!-- Overlay -->
+    <div class="overlay" id="overlay"></div>
+
+    <!-- Pomodoro Window -->
+    <div class="popup-window" id="pomodoroWindow">
+      <div class="bg-white w-96 shadow-lg rounded-lg overflow-hidden">
+        <!-- Title Bar -->
+        <div
+          class="bg-gray-800 px-4 py-2 flex justify-between items-center cursor-move"
+          id="pomodoroTitleBar"
+        >
+          <div class="flex items-center space-x-2">
+            <svg
+              class="w-4 h-4 text-red-500"
+              fill="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <circle cx="12" cy="12" r="10" />
+            </svg>
+            <span class="text-white text-sm">Pomodoro Timer</span>
+          </div>
+          <div class="flex space-x-2">
+            <button
+              class="text-gray-400 hover:text-white"
+              id="minimizePomodoro"
+            >
+              −
+            </button>
+            <button
+              class="text-gray-400 hover:text-white"
+              id="maximizePomodoro"
+            >
+              □
+            </button>
+            <button class="text-gray-400 hover:text-white" id="closePomodoro">
+              ×
+            </button>
+          </div>
+        </div>
+
+        <!-- Timer Content -->
+        <div class="p-8 text-center">
+          <div class="text-6xl font-bold text-gray-800 mb-8" id="timer">
+            25:00
+          </div>
+
+          <!-- Mode Selector -->
+          <div class="flex justify-center space-x-4 mb-8">
+            <button
+              class="px-4 py-2 bg-red-500 text-white rounded-lg focus:outline-none active"
+              id="pomodoroMode"
+            >
+              Pomodoro
+            </button>
+            <button
+              class="px-4 py-2 bg-gray-200 text-gray-600 rounded-lg focus:outline-none"
+              id="shortBreak"
+            >
+              Short Break
+            </button>
+            <button
+              class="px-4 py-2 bg-gray-200 text-gray-600 rounded-lg focus:outline-none"
+              id="longBreak"
+            >
+              Long Break
+            </button>
+          </div>
+
+          <!-- Controls -->
+          <div class="flex justify-center space-x-4">
+            <button
+              class="px-8 py-3 bg-red-500 text-white rounded-full hover:bg-red-600 focus:outline-none"
+              id="startTimer"
+            >
+              Start
+            </button>
+            <button
+              class="px-8 py-3 bg-gray-200 text-gray-600 rounded-full hover:bg-gray-300 focus:outline-none hidden"
+              id="pauseTimer"
+            >
+              Pause
+            </button>
+            <button
+              class="px-8 py-3 bg-gray-200 text-gray-600 rounded-full hover:bg-gray-300 focus:outline-none"
+              id="resetTimer"
+            >
+              Reset
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Note Window -->
+    <div class="popup-window" id="noteWindow">
+      <div
+        class="bg-white w-[800px] h-[600px] shadow-lg rounded-lg overflow-hidden"
+      >
+        <!-- Title Bar -->
+        <div
+          class="bg-gray-800 px-4 py-2 flex justify-between items-center cursor-move"
+          id="noteTitleBar"
+        >
+          <div class="flex items-center space-x-2">
+            <svg
+              class="w-4 h-4 text-yellow-500"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+              />
+            </svg>
+            <span class="text-white text-sm">Notes</span>
+          </div>
+          <div class="flex space-x-2">
+            <button class="text-gray-400 hover:text-white" id="minimizeNote">
+              −
+            </button>
+            <button class="text-gray-400 hover:text-white" id="maximizeNote">
+              □
+            </button>
+            <button class="text-gray-400 hover:text-white" id="closeNote">
+              ×
+            </button>
+          </div>
+        </div>
+
+        <!-- Note Content -->
+        <div class="flex h-[calc(100%-40px)]">
+          <!-- Sidebar -->
+          <div class="w-64 bg-gray-50 border-r border-gray-200 p-4">
+            <div class="flex justify-between items-center mb-4">
+              <h2 class="text-lg font-semibold text-gray-700">Notes List</h2>
+              <button
+                id="newNoteBtn"
+                class="p-2 hover:bg-gray-200 rounded-full"
+              >
+                <svg
+                  class="w-5 h-5 text-gray-600"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M12 4v16m8-8H4"
+                  />
+                </svg>
+              </button>
+            </div>
+            <div id="notesList" class="space-y-2">
+              <!-- Note items will be added here -->
+            </div>
+          </div>
+
+          <!-- Editor -->
+          <div class="flex-1 flex flex-col p-4">
+            <input
+              type="text"
+              id="noteTitle"
+              class="text-xl font-semibold mb-4 p-2 border-b border-gray-200 focus:outline-none focus:border-blue-500"
+              placeholder="Note title"
+            />
+            <textarea
+              id="noteContent"
+              class="flex-1 p-2 resize-none focus:outline-none"
+              placeholder="Type your note here..."
+            ></textarea>
+            <div class="flex justify-end space-x-2 mt-4">
+              <button
+                id="saveNote"
+                class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+              >
+                Save
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Todo List Window -->
+    <div class="popup-window" id="todoWindow">
+      <div
+        class="bg-white w-[800px] h-[600px] shadow-lg rounded-lg overflow-hidden"
+      >
+        <!-- Title Bar -->
+        <div
+          class="bg-gray-800 px-4 py-2 flex justify-between items-center cursor-move"
+          id="todoTitleBar"
+        >
+          <div class="flex items-center space-x-2">
+            <svg
+              class="w-4 h-4 text-green-500"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"
+              />
+            </svg>
+            <span class="text-white text-sm">Todo List</span>
+          </div>
+          <div class="flex space-x-2">
+            <button class="text-gray-400 hover:text-white" id="minimizeTodo">
+              −
+            </button>
+            <button class="text-gray-400 hover:text-white" id="maximizeTodo">
+              □
+            </button>
+            <button class="text-gray-400 hover:text-white" id="closeTodo">
+              ×
+            </button>
+          </div>
+        </div>
+
+        <!-- Todo Content -->
+        <div class="flex h-[calc(100%-40px)]">
+          <!-- Sidebar -->
+          <div class="w-64 bg-gray-50 border-r border-gray-200 p-4">
+            <div class="space-y-2">
+              <button
+                id="allTasks"
+                class="w-full text-left px-4 py-2 rounded hover:bg-gray-200 active"
+              >
+                All Tasks
+              </button>
+              <button
+                id="todayTasks"
+                class="w-full text-left px-4 py-2 rounded hover:bg-gray-200"
+              >
+                Today
+              </button>
+              <button
+                id="upcomingTasks"
+                class="w-full text-left px-4 py-2 rounded hover:bg-gray-200"
+              >
+                Upcoming
+              </button>
+              <button
+                id="completedTasks"
+                class="w-full text-left px-4 py-2 rounded hover:bg-gray-200"
+              >
+                Completed
+              </button>
+            </div>
+          </div>
+
+          <!-- Main Content -->
+          <div class="flex-1 flex flex-col p-4">
+            <!-- Add Task Form -->
+            <form id="addTaskForm" class="mb-4">
+              <div class="flex space-x-2">
+                <input
+                  type="text"
+                  id="taskTitle"
+                  class="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"
+                  placeholder="Add new task"
+                />
+                <input
+                  type="date"
+                  id="taskDueDate"
+                  class="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"
+                />
+                <button
+                  type="submit"
+                  class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 focus:outline-none"
+                >
+                  Add
+                </button>
+              </div>
+            </form>
+
+            <!-- Tasks List -->
+            <div id="tasksList" class="flex-1 overflow-y-auto space-y-2">
+              <!-- Tasks will be added here -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Import scripts -->
+    <script type="module" src="./js/main.js"></script>
+  </body>
+</html>
