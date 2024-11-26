@@ -14,7 +14,7 @@ export default class Camera {
     this.scene = this.experience.scene;
 
     // Set up
-    this.mode = "default"; // defaultCamera \ debugCamera
+    this.mode = "pcscreen"; // defaultCamera \ debugCamera
 
     this.setInstance();
     this.setModes();
@@ -23,13 +23,13 @@ export default class Camera {
   setInstance() {
     // Set up
     this.instance = new THREE.PerspectiveCamera(
-      25,
+      20,
       this.config.width / this.config.height,
       0.1,
       150
     );
     this.instance.rotation.reorder("YXZ");
-
+    console.log("Vị trí camera mặc định:", this.instance.position);
     this.scene.add(this.instance);
   }
 
@@ -46,6 +46,13 @@ export default class Camera {
     this.modes.debug.instance = this.instance.clone();
     this.modes.debug.instance.rotation.reorder("YXZ");
     this.modes.debug.instance.position.set(-15, 15, 15);
+
+    // Thêm camera PCScreen
+    this.modes.pcscreen = {};
+    this.modes.pcscreen.instance = this.instance.clone();
+    this.modes.pcscreen.instance.rotation.reorder("YXZ");
+    this.modes.pcscreen.instance.position.set(0.3, 3.7, 0.3); // Giảm z từ 0.5 xuống 0.3
+    this.modes.pcscreen.instance.lookAt(0.3, 3.676, 0); // Giữ nguyên điểm nhìn
 
     this.modes.debug.orbitControls = new OrbitControls(
       this.modes.debug.instance,
@@ -68,6 +75,10 @@ export default class Camera {
 
     this.modes.debug.instance.aspect = this.config.width / this.config.height;
     this.modes.debug.instance.updateProjectionMatrix();
+
+    this.modes.pcscreen.instance.aspect =
+      this.config.width / this.config.height;
+    this.modes.pcscreen.instance.updateProjectionMatrix();
   }
 
   update() {
