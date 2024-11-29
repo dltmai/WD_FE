@@ -1,0 +1,72 @@
+[
+  {
+    "id": "1",
+    "title": "Hướng dẫn sử dụng API",
+    "content": "Đây là hướng dẫn chi tiết cách sử dụng API của hệ thống.",
+    "createdAt": "2024-11-29",
+    "updatedAt": "2024-11-29"
+  },
+  {
+    "id": "2",
+    "title": "Cập nhật phiên bản 1.2",
+    "content": "Phiên bản 1.2 mang lại nhiều cải tiến về hiệu năng và sửa lỗi.",
+    "createdAt": "2024-11-29",
+    "updatedAt": "2024-11-29"
+  },
+  {
+    "id": "3",
+    "title": "Thông báo bảo trì hệ thống",
+    "content": "Hệ thống sẽ bảo trì vào ngày 30/11/2024 từ 00:00 đến 04:00.",
+    "createdAt": "2024-11-29",
+    "updatedAt": "2024-11-29"
+  },
+  {
+    "id": "4",
+    "title": "Chính sách bảo mật mới",
+    "content": "Chính sách bảo mật đã được cập nhật để bảo vệ thông tin người dùng tốt hơn.",
+    "createdAt": "2024-11-29",
+    "updatedAt": "2024-11-29"
+  },
+  {
+    "id": "5",
+    "title": "Lịch trình sự kiện tháng 12",
+    "content": "Danh sách sự kiện sẽ diễn ra trong tháng 12/2024.",
+    "createdAt": "2024-11-29",
+    "updatedAt": "2024-11-29"
+  },
+  {
+    "id": "6",
+    "title": "Hướng dẫn thanh toán trực tuyến",
+    "content": "Các bước để thực hiện thanh toán trực tuyến một cách an toàn.",
+    "createdAt": "2024-11-29",
+    "updatedAt": "2024-11-29"
+  },
+  {
+    "id": "7",
+    "title": "Khuyến mãi cuối năm",
+    "content": "Nhiều chương trình khuyến mãi hấp dẫn cuối năm dành cho khách hàng.",
+    "createdAt": "2024-11-29",
+    "updatedAt": "2024-11-29"
+  },
+  {
+    "id": "8",
+    "title": "Cách đặt lại mật khẩu",
+    "content": "Hướng dẫn chi tiết cách đặt lại mật khẩu khi quên.",
+    "createdAt": "2024-11-29",
+    "updatedAt": "2024-11-29"
+  },
+  {
+    "id": "9",
+    "title": "Hỗ trợ khách hàng 24/7",
+    "content": "Dịch vụ hỗ trợ khách hàng 24/7 đã được triển khai.",
+    "createdAt": "2024-11-29",
+    "updatedAt": "2024-11-29"
+  },
+  {
+    "id": "10",
+    "title": "Tuyển dụng nhân sự mới",
+    "content": "Chúng tôi đang tìm kiếm những ứng viên tài năng để gia nhập đội ngũ.",
+    "createdAt": "2024-11-29",
+    "updatedAt": "2024-11-29"
+  }
+]
