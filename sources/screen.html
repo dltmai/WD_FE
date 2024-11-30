@@ -5,9 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Windows Interface</title>
     <script src="https://cdn.tailwindcss.com"></script>
+
     <style>
       .desktop-background {
-        background-image: url("/public/assets/wallpaper.jpg");
+        background-image: url("../public/assets/wallpaper.jpg");
         background-size: cover;
         background-position: center;
         background-repeat: no-repeat;
@@ -25,34 +26,104 @@
       }
 
       .popup-window {
-        display: none;
         position: fixed;
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
-        z-index: 1000;
-        background: white;
-        border-radius: 8px;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        z-index: 999;
+        display: none;
+        pointer-events: none;
       }
 
       .popup-window.active {
         display: block;
+        pointer-events: all;
+      }
+
+      .popup-window.maximized {
+        top: 0;
+        left: 0;
+        transform: none;
+        width: 100vw !important;
+        height: 100vh !important;
+      }
+
+      .popup-window.maximized > div {
+        width: 100% !important;
+        height: 100% !important;
+        border-radius: 0 !important;
+      }
+
+      .popup-window.maximized #todosList {
+        max-height: calc(100vh - 200px) !important;
+      }
+
+      .popup-window.minimized {
+        transform: translate(-50%, 150%);
       }
 
       .overlay {
         display: none;
         position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
+        inset: 0;
         background: rgba(0, 0, 0, 0.5);
-        z-index: 999;
+        z-index: 998;
       }
 
       .overlay.active {
         display: block;
+        pointer-events: all;
+      }
+
+      /* Style cho notesList */
+      #notesList {
+        max-height: calc(100vh - 300px);
+        overflow-y: auto;
+        scrollbar-width: none; /* Firefox */
+        -ms-overflow-style: none; /* IE and Edge */
+      }
+
+      /* Ẩn thanh cuộn cho Chrome, Safari và Opera */
+      #notesList::-webkit-scrollbar {
+        display: none;
+      }
+
+      /* Style cho noteContent */
+      #noteContent {
+        flex: 1;
+        overflow-y: auto;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+        resize: none;
+      }
+
+      #noteContent::-webkit-scrollbar {
+        display: none;
+      }
+
+      /* Điều chỉnh z-index cho confirm dialog */
+      #confirmDialog {
+        z-index: 1000;
+      }
+
+      /* Thêm class để chặn scroll */
+      .no-scroll {
+        overflow: hidden;
+      }
+
+      /* Thêm class để kiểm soát pointer events */
+      .pointer-events-none {
+        pointer-events: none;
+      }
+
+      .pointer-events-auto {
+        pointer-events: auto;
+      }
+
+      /* Đảm bảo overlay luôn chặn tương tác */
+      .overlay.active {
+        display: block;
+        pointer-events: all;
       }
     </style>
   </head>
@@ -81,11 +152,7 @@
               />
             </svg>
           </div>
-          <p
-            class="text-white text-sm text-center text-shadow group-hover:bg-blue-500/70"
-          >
-            Pomodoro
-          </p>
+          <p class="text-white text-sm text-center text-shadow">Pomodoro</p>
         </div>
 
         <!-- Note -->
@@ -108,11 +175,7 @@
               />
             </svg>
           </div>
-          <p
-            class="text-white text-sm text-center text-shadow group-hover:bg-blue-500/70"
-          >
-            Notes
-          </p>
+          <p class="text-white text-sm text-center text-shadow">Notes</p>
         </div>
 
         <!-- Todo List -->
@@ -135,11 +198,7 @@
               />
             </svg>
           </div>
-          <p
-            class="text-white text-sm text-center text-shadow group-hover:bg-blue-500/70"
-          >
-            Todo
-          </p>
+          <p class="text-white text-sm text-center text-shadow">Todo</p>
         </div>
       </div>
     </div>
@@ -234,7 +293,10 @@
     </div>
 
     <!-- Overlay -->
-    <div class="overlay" id="overlay"></div>
+    <div
+      id="overlay"
+      class="fixed inset-0 bg-black bg-opacity-50 hidden z-40"
+    ></div>
 
     <!-- Pomodoro Window -->
     <div class="popup-window" id="pomodoroWindow">
@@ -359,7 +421,7 @@
             <button class="text-gray-400 hover:text-white" id="maximizeNote">
               □
             </button>
-            <button class="text-gray-400 hover:text-white" id="closeNote">
+            <button class="text-gray-400 hover:text-red-500" id="closeNote">
               ×
             </button>
           </div>
@@ -421,19 +483,19 @@
       </div>
     </div>
 
-    <!-- Todo List Window -->
-    <div class="popup-window" id="todoWindow">
+    <!-- Todo Window -->
+    <div id="todoWindow" class="popup-window">
       <div
-        class="bg-white w-[800px] h-[600px] shadow-lg rounded-lg overflow-hidden"
+        class="bg-white rounded-lg shadow-lg w-[500px] max-h-[600px] flex flex-col overflow-hidden"
       >
         <!-- Title Bar -->
         <div
-          class="bg-gray-800 px-4 py-2 flex justify-between items-center cursor-move"
+          class="bg-gray-800 px-4 py-2 flex justify-between items-center rounded-t-lg"
           id="todoTitleBar"
         >
           <div class="flex items-center space-x-2">
             <svg
-              class="w-4 h-4 text-green-500"
+              class="w-5 h-5 text-blue-500"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -445,82 +507,161 @@
                 d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"
               />
             </svg>
-            <span class="text-white text-sm">Todo List</span>
+            <span class="text-white font-medium">Todo List</span>
           </div>
-          <div class="flex space-x-2">
-            <button class="text-gray-400 hover:text-white" id="minimizeTodo">
-              −
+          <div class="flex items-center space-x-1">
+            <!-- Nút thu nhỏ -->
+            <button
+              id="minimizeTodo"
+              class="text-gray-400 hover:text-white p-1.5 rounded-md hover:bg-gray-700 transition-colors"
+            >
+              <svg
+                class="w-4 h-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M20 12H4"
+                />
+              </svg>
             </button>
-            <button class="text-gray-400 hover:text-white" id="maximizeTodo">
-              □
+
+            <!-- Nút phóng to/thu nhỏ -->
+            <button
+              id="maximizeTodo"
+              class="text-gray-400 hover:text-white p-1.5 rounded-md hover:bg-gray-700 transition-colors"
+            >
+              <svg
+                class="w-4 h-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M4 8V4m0 0h4M4 4l5 5m11-5V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5v-4m0 4h-4m4 0l-5-5"
+                />
+              </svg>
             </button>
-            <button class="text-gray-400 hover:text-white" id="closeTodo">
-              ×
+
+            <!-- Nút đóng -->
+            <button
+              id="closeTodo"
+              class="text-gray-400 hover:text-white p-1.5 rounded-md hover:bg-red-500 transition-colors"
+            >
+              <svg
+                class="w-4 h-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M6 18L18 6M6 6l12 12"
+                />
+              </svg>
             </button>
           </div>
         </div>
 
-        <!-- Todo Content -->
-        <div class="flex h-[calc(100%-40px)]">
-          <!-- Sidebar -->
-          <div class="w-64 bg-gray-50 border-r border-gray-200 p-4">
-            <div class="space-y-2">
+        <!-- Content -->
+        <div class="p-4 flex-1 flex flex-col overflow-hidden bg-gray-50">
+          <!-- Form thêm todo -->
+          <form id="addTodoForm" class="mb-4 flex-shrink-0">
+            <div class="flex gap-2">
+              <input
+                type="text"
+                id="todoInput"
+                placeholder="Thêm công việc mới..."
+                class="flex-1 p-2 border rounded-md focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+              />
               <button
-                id="allTasks"
-                class="w-full text-left px-4 py-2 rounded hover:bg-gray-200 active"
+                type="submit"
+                class="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors"
               >
-                All Tasks
-              </button>
-              <button
-                id="todayTasks"
-                class="w-full text-left px-4 py-2 rounded hover:bg-gray-200"
-              >
-                Today
-              </button>
-              <button
-                id="upcomingTasks"
-                class="w-full text-left px-4 py-2 rounded hover:bg-gray-200"
-              >
-                Upcoming
-              </button>
-              <button
-                id="completedTasks"
-                class="w-full text-left px-4 py-2 rounded hover:bg-gray-200"
-              >
-                Completed
+                Add
               </button>
             </div>
+          </form>
+
+          <!-- Filter buttons -->
+          <div class="flex gap-2 mb-4 flex-shrink-0">
+            <button
+              class="filter-btn px-3 py-1.5 rounded-md bg-blue-500 text-white transition-colors"
+              data-filter="all"
+            >
+              All
+            </button>
+            <button
+              class="filter-btn px-3 py-1.5 rounded-md hover:bg-gray-100 transition-colors"
+              data-filter="active"
+            >
+              On going
+            </button>
+            <button
+              class="filter-btn px-3 py-1.5 rounded-md hover:bg-gray-100 transition-colors"
+              data-filter="completed"
+            >
+              Completed
+            </button>
           </div>
 
-          <!-- Main Content -->
-          <div class="flex-1 flex flex-col p-4">
-            <!-- Add Task Form -->
-            <form id="addTaskForm" class="mb-4">
-              <div class="flex space-x-2">
-                <input
-                  type="text"
-                  id="taskTitle"
-                  class="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"
-                  placeholder="Add new task"
-                />
-                <input
-                  type="date"
-                  id="taskDueDate"
-                  class="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"
-                />
-                <button
-                  type="submit"
-                  class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 focus:outline-none"
-                >
-                  Add
-                </button>
-              </div>
-            </form>
+          <!-- Danh sách todos -->
+          <div
+            id="todosList"
+            class="flex-1 overflow-y-auto space-y-2 custom-scrollbar pr-2"
+          >
+            <!-- Todos sẽ được render ở đây -->
+          </div>
+        </div>
+      </div>
+    </div>
 
-            <!-- Tasks List -->
-            <div id="tasksList" class="flex-1 overflow-y-auto space-y-2">
-              <!-- Tasks will be added here -->
-            </div>
+    <!-- Thêm vào cuối body, trước script -->
+    <div id="confirmDialog" class="fixed inset-0 z-50 hidden">
+      <div class="absolute inset-0 bg-black bg-opacity-50"></div>
+      <div
+        class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
+      >
+        <div class="bg-white rounded-lg shadow-xl p-6 w-80">
+          <div class="flex items-center mb-4">
+            <svg
+              class="w-6 h-6 text-red-500 mr-2"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+              />
+            </svg>
+            <h3 class="text-lg font-medium text-gray-900">Delete</h3>
+          </div>
+          <p class="text-gray-500 mb-4">Confirm delete ?</p>
+          <div class="flex justify-end space-x-2">
+            <button
+              id="cancelDelete"
+              class="px-4 py-2 text-gray-500 hover:text-gray-700 font-medium"
+            >
+              Cancel
+            </button>
+            <button
+              id="confirmDelete"
+              class="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600"
+            >
+              Delete
+            </button>
           </div>
         </div>
       </div>
