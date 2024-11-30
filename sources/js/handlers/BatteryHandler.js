@@ -1,6 +1,11 @@
 export default class BatteryHandler {
   constructor() {
-    this.initBattery();
+    this.batteryIcon = document.querySelector(".battery-icon");
+    this.batteryText = document.querySelector(".battery-text");
+
+    if (this.batteryIcon && this.batteryText) {
+      this.initBattery();
+    }
   }
 
   async initBattery() {
@@ -18,27 +23,32 @@ export default class BatteryHandler {
   }
 
   updateBatteryStatus(battery) {
+    if (!this.batteryIcon || !this.batteryText) return;
+
     const level = Math.floor(battery.level * 100);
-    const batteryIcon = document.querySelector(".battery-icon");
-    const batteryText = document.querySelector(".text-xs");
-
-    batteryText.textContent = level + "%";
-
-    this.updateBatteryIcon(batteryIcon, level);
+    this.batteryText.textContent = level + "%";
+    this.updateBatteryIcon(level);
 
     if (battery.charging) {
-      batteryText.textContent += " ⚡";
+      this.batteryText.textContent += " ⚡";
     }
   }
 
-  updateBatteryIcon(icon, level) {
-    icon.classList.remove("text-red-500", "text-yellow-500", "text-green-500");
+  updateBatteryIcon(level) {
+    if (!this.batteryIcon) return;
+
+    this.batteryIcon.classList.remove(
+      "text-red-500",
+      "text-yellow-500",
+      "text-green-500"
+    );
+
     if (level <= 20) {
-      icon.classList.add("text-red-500");
+      this.batteryIcon.classList.add("text-red-500");
     } else if (level <= 50) {
-      icon.classList.add("text-yellow-500");
+      this.batteryIcon.classList.add("text-yellow-500");
     } else {
-      icon.classList.add("text-green-500");
+      this.batteryIcon.classList.add("text-green-500");
     }
   }
 }
