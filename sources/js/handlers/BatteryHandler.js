@@ -10,15 +10,23 @@ export default class BatteryHandler {
 
   async initBattery() {
     if ("getBattery" in navigator) {
-      const battery = await navigator.getBattery();
-      this.updateBatteryStatus(battery);
+      try {
+        const battery = await navigator.getBattery();
+        this.updateBatteryStatus(battery);
 
-      battery.addEventListener("levelchange", () =>
-        this.updateBatteryStatus(battery)
-      );
-      battery.addEventListener("chargingchange", () =>
-        this.updateBatteryStatus(battery)
-      );
+        battery.addEventListener("levelchange", () => {
+          this.updateBatteryStatus(battery);
+        });
+        battery.addEventListener("chargingchange", () => {
+          this.updateBatteryStatus(battery);
+        });
+      } catch (error) {
+        console.error("Error accessing battery status:", error);
+        this.showDefaultBattery();
+      }
+    } else {
+      console.warn("Battery API is not supported on this browser.");
+      this.showDefaultBattery();
     }
   }
 
@@ -26,16 +34,15 @@ export default class BatteryHandler {
     if (!this.batteryIcon || !this.batteryText) return;
 
     const level = Math.floor(battery.level * 100);
-    this.batteryText.textContent = level + "%";
-    this.updateBatteryIcon(level);
 
-    if (battery.charging) {
-      this.batteryText.textContent += " ⚡";
-    }
-  }
-
-  updateBatteryIcon(level) {
-    if (!this.batteryIcon) return;
+    this.batteryIcon.innerHTML = `
+      <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+        <rect x="2" y="7" width="18" height="12" rx="2" ry="2" stroke-width="2"/>
+        <rect x="20" y="10" width="2" height="6" stroke-width="2"/>
+        <rect x="4" y="9" width="${14 * (level / 100)}" height="8" 
+          fill="currentColor" stroke="none"/>
+      </svg>
+    `;
 
     this.batteryIcon.classList.remove(
       "text-red-500",
@@ -50,5 +57,23 @@ export default class BatteryHandler {
     } else {
       this.batteryIcon.classList.add("text-green-500");
     }
+
+    this.batteryText.textContent = `${level}%`;
+    if (battery.charging) {
+      this.batteryText.textContent += " ⚡";
+    }
+  }
+
+  showDefaultBattery() {
+    if (!this.batteryIcon || !this.batteryText) return;
+
+    this.batteryIcon.innerHTML = `
+      <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+        <rect x="2" y="7" width="18" height="12" rx="2" ry="2" stroke-width="2"/>
+        <rect x="20" y="10" width="2" height="6" stroke-width="2"/>
+      </svg>
+    `;
+    this.batteryIcon.classList.add("text-gray-500");
+    this.batteryText.textContent = "N/A";
   }
 }
