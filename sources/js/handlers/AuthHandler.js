@@ -1,6 +1,6 @@
 export default class AuthHandler {
   constructor() {
-    this.API_URL = "http://localhost:5001/users";
+    this.API_URL = "https://levelup-backendside.onrender.com/users";
     this.checkAuth();
     if (window.location.pathname.includes("authen.html")) {
       this.initializeElements();

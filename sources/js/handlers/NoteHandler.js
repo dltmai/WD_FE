@@ -4,7 +4,7 @@ export default class NoteHandler {
   constructor() {
     this.notes = [];
     this.currentNote = null;
-    this.API_URL = "http://localhost:5001/notes";
+    this.API_URL = "https://levelup-backendside.onrender.com/notes";
     this.initializeElements();
     this.addEventListeners();
     this.loadNotes();
@@ -37,6 +37,7 @@ export default class NoteHandler {
   async loadNotes() {
     try {
       const response = await fetch(this.API_URL);
+      console.log(response);
       if (!response.ok) throw new Error("Failed to load notes");
       this.notes = await response.json();
       this.renderNotesList();

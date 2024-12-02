@@ -2,7 +2,7 @@ export default class TodoHandler {
   constructor() {
     this.todos = [];
     this.currentFilter = "all";
-    this.API_URL = "http://localhost:5001/todos";
+    this.API_URL = "https://levelup-backendside.onrender.com/todos";
     this.initializeElements();
     this.addEventListeners();
     this.loadTodos();
