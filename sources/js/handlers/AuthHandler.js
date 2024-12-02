@@ -69,8 +69,8 @@ export default class AuthHandler {
 
       window.location.href = "/screen.html";
     } catch (error) {
-      console.error("Lỗi đăng nhập:", error);
-      alert(error.message || "Đăng nhập thất bại. Vui lòng thử lại.");
+      console.error("Error:", error);
+      alert(error.message || "Sign in failed.");
     }
   }
 
