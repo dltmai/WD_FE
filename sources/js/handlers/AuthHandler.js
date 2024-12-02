@@ -1,8 +1,11 @@
 export default class AuthHandler {
   constructor() {
     this.API_URL = "http://localhost:5001/users";
-    this.initializeElements();
-    this.addEventListeners();
+    this.checkAuth();
+    if (window.location.pathname.includes("authen.html")) {
+      this.initializeElements();
+      this.addEventListeners();
+    }
   }
 
   initializeElements() {
@@ -122,8 +125,19 @@ export default class AuthHandler {
 
   checkAuth() {
     const token = localStorage.getItem("token");
-    if (token) {
-      window.location.href = "/screen.html";
+    const user = localStorage.getItem("user");
+
+    // Nếu đang ở trang screen.html mà chưa đăng nhập thì chuyển hướng
+    if (window.location.pathname.includes("screen.html")) {
+      if (!token || !user) {
+        window.location.href = "/authen.html";
+      }
+    }
+    // Nếu đã đăng nhập mà vào trang đăng nhập thì chuyển về screen
+    else if (window.location.pathname.includes("authen.html")) {
+      if (token && user) {
+        window.location.href = "/screen.html";
+      }
     }
   }
 

@@ -47,6 +47,7 @@ export default class TodoHandler {
       const response = await fetch(this.API_URL);
       if (!response.ok) throw new Error("Failed to fetch todos");
       this.todos = await response.json();
+      console.log(this.todos);
       this.renderTodosList();
     } catch (error) {
       console.error("Error loading todos:", error);
@@ -100,7 +101,10 @@ export default class TodoHandler {
 
       if (!response.ok) throw new Error("Failed to update todo");
 
+      // Cập nhật trạng thái completed
       todo.completed = !todo.completed;
+
+      // Gọi lại hàm render để cập nhật giao diện
       this.renderTodosList();
     } catch (error) {
       console.error("Error updating todo:", error);
@@ -147,7 +151,9 @@ export default class TodoHandler {
             >
             <span class="ml-3 ${
               todo.completed ? "line-through text-gray-500" : ""
-            }">${todo.text}</span>
+            }">
+              ${todo.title}
+            </span>
           </div>
           <button
             onclick="window.todoHandler.deleteTodo('${todo._id}')"

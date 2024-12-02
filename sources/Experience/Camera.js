@@ -23,7 +23,7 @@ export default class Camera {
   setInstance() {
     // Set up
     this.instance = new THREE.PerspectiveCamera(
-      20,
+      25,
       this.config.width / this.config.height,
       0.1,
       150

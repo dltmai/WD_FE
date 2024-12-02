@@ -53,7 +53,7 @@ export default class Screen {
 
       if (intersects.length > 0) {
         // Chuyển hướng sang screen.html
-        window.location.href = "/screen.html";
+        window.location.href = "/authen.html";
       }
     });
   }
