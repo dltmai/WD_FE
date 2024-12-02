@@ -67,7 +67,7 @@ export default class TodoHandler {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          text: todoText,
+          title: todoText,
           completed: false,
         }),
       });
