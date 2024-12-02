@@ -14,6 +14,48 @@ export default class Screen {
     this.sourcePath = _sourcePath;
 
     this.setModel();
+    this.setupHoverEffect();
+  }
+
+  setupHoverEffect() {
+    // Thêm event listeners
+    window.addEventListener("mousemove", (event) => {
+      const mouse = new THREE.Vector2(
+        (event.clientX / window.innerWidth) * 2 - 1,
+        -(event.clientY / window.innerHeight) * 2 + 1
+      );
+
+      const raycaster = new THREE.Raycaster();
+      raycaster.setFromCamera(mouse, this.experience.camera.instance);
+
+      const intersects = raycaster.intersectObject(this.model.mesh);
+
+      if (intersects.length > 0) {
+        document.body.style.cursor = "pointer";
+        this.model.mesh.material.opacity = 0.8;
+      } else {
+        document.body.style.cursor = "default";
+        this.model.mesh.material.opacity = 1;
+      }
+    });
+
+    // Sửa lại phần xử lý click để chuyển hướng sang screen.html
+    window.addEventListener("click", (event) => {
+      const mouse = new THREE.Vector2(
+        (event.clientX / window.innerWidth) * 2 - 1,
+        -(event.clientY / window.innerHeight) * 2 + 1
+      );
+
+      const raycaster = new THREE.Raycaster();
+      raycaster.setFromCamera(mouse, this.experience.camera.instance);
+
+      const intersects = raycaster.intersectObject(this.model.mesh);
+
+      if (intersects.length > 0) {
+        // Chuyển hướng sang screen.html
+        window.location.href = "/screen.html";
+      }
+    });
   }
 
   setModel() {
