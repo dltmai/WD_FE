@@ -59,7 +59,7 @@ export default class AuthHandler {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.message || "Đăng nhập thất bại");
+        throw new Error(data.message || "Sign in failed");
       }
 
       localStorage.setItem("token", data.token);
@@ -111,15 +111,15 @@ export default class AuthHandler {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.message || "Đăng ký thất bại");
+        throw new Error(data.message || "Sign up failed.");
       }
 
-      alert("Đăng ký thành công! Vui lòng đăng nhập.");
+      //alert("Đăng ký thành công! Vui lòng đăng nhập.");
       document.querySelector(".container").classList.remove("sign-up-mode");
       this.signUpForm.reset();
     } catch (error) {
-      console.error("Lỗi đăng ký:", error);
-      alert(error.message || "Đăng ký thất bại. Vui lòng thử lại.");
+      console.error("Error:", error);
+      alert(error.message || "Error sign up.");
     }
   }
 
