@@ -43,7 +43,7 @@ export default class NoteHandler {
       this.renderNotesList();
     } catch (error) {
       console.error("Error loading notes:", error);
-      alert("Có lỗi xảy ra khi tải ghi chú");
+      //alert("Có lỗi xảy ra khi tải ghi chú");
     }
   }
 
@@ -105,7 +105,7 @@ export default class NoteHandler {
     };
 
     if (!noteData.title || !noteData.content) {
-      alert("Vui lòng điền đầy đủ tiêu đề và nội dung");
+      //alert("Vui lòng điền đầy đủ tiêu đề và nội dung");
       return;
     }
 
@@ -147,7 +147,7 @@ export default class NoteHandler {
       this.createNewNote(); // Reset form after saving
     } catch (error) {
       console.error("Error saving note:", error);
-      alert("Có lỗi xảy ra khi lưu ghi chú");
+      //alert("Có lỗi xảy ra khi lưu ghi chú");
     }
   }
 
@@ -175,7 +175,7 @@ export default class NoteHandler {
           }
         } catch (error) {
           console.error("Error deleting note:", error);
-          alert("Có lỗi xảy ra khi xóa ghi chú");
+          //alert("Có lỗi xảy ra khi xóa ghi chú");
         } finally {
           confirmDialog.classList.add("hidden");
           // Cleanup

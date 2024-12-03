@@ -51,7 +51,7 @@ export default class TodoHandler {
       this.renderTodosList();
     } catch (error) {
       console.error("Error loading todos:", error);
-      alert("Có lỗi xảy ra khi tải danh sách công việc");
+      //alert("Có lỗi xảy ra khi tải danh sách công việc");
     }
   }
 
@@ -80,7 +80,7 @@ export default class TodoHandler {
       this.renderTodosList();
     } catch (error) {
       console.error("Error adding todo:", error);
-      alert("Có lỗi xảy ra khi thêm công việc");
+      //alert("Có lỗi xảy ra khi thêm công việc");
     }
   }
 
@@ -108,7 +108,7 @@ export default class TodoHandler {
       this.renderTodosList();
     } catch (error) {
       console.error("Error updating todo:", error);
-      alert("Có lỗi xảy ra khi cập nhật trạng thái");
+      //alert("Có lỗi xảy ra khi cập nhật trạng thái");
     }
   }
 
@@ -125,7 +125,7 @@ export default class TodoHandler {
         this.renderTodosList();
       } catch (error) {
         console.error("Error deleting todo:", error);
-        alert("Có lỗi xảy ra khi xóa công việc");
+        //alert("Có lỗi xảy ra khi xóa công việc");
       }
     }
   }
