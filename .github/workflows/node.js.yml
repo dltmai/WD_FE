@@ -32,20 +32,20 @@ jobs:
           sudo systemctl stop nginx
 
           # Copy Nginx config
-          sudo cp nginx.conf /etc/nginx/sites-available/tchmovie.conf
-          sudo ln -sf /etc/nginx/sites-available/tchmovie.conf /etc/nginx/sites-enabled/
+          sudo cp nginx.conf /etc/nginx/sites-available/levelup.conf
+          sudo ln -sf /etc/nginx/sites-available/levelup.conf /etc/nginx/sites-enabled/
 
           # Clear and prepare directory
-          sudo rm -rf /var/www/tchmovie/*
-          sudo mkdir -p /var/www/tchmovie
-          sudo chown -R $USER:$USER /var/www/tchmovie
+          sudo rm -rf /var/www/levelup/*
+          sudo mkdir -p /var/www/levelup
+          sudo chown -R $USER:$USER /var/www/levelup
 
           # Copy new build files
-          sudo cp -r dist/* /var/www/tchmovie/
+          sudo cp -r dist/* /var/www/levelup/
 
           # Set permissions
-          sudo chown -R www-data:www-data /var/www/tchmovie
-          sudo chmod -R 755 /var/www/tchmovie
+          sudo chown -R www-data:www-data /var/www/levelup
+          sudo chmod -R 755 /var/www/levelup
 
           # Start Nginx
           sudo nginx -t && sudo systemctl start nginx && sudo systemctl reload nginx
