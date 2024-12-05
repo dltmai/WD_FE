@@ -1,17 +1,17 @@
-import glsl from 'vite-plugin-glsl';
-import { defineConfig } from 'vite'
-import path from 'path'
-
-const dirname = path.resolve()
+import glsl from "vite-plugin-glsl";
+import { defineConfig } from "vite";
 
 export default defineConfig({
-    root: 'sources',
-    publicDir: '../public',
-    build:
-    {
-        outDir: '../dist',
-        emptyOutDir: true,
-        sourcemap: true
+  root: ".", // Đảm bảo root là thư mục gốc
+  publicDir: "public",
+  build: {
+    outDir: "dist",
+    emptyOutDir: true,
+    sourcemap: true,
+    rollupOptions: {
+      input: "index.html", // Đảm bảo đường dẫn đúng
     },
-    plugins: [glsl()]
-})
+  },
+  plugins: [glsl()],
+  base: "./",
+});
