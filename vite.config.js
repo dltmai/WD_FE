@@ -9,7 +9,11 @@ export default defineConfig({
     emptyOutDir: true,
     sourcemap: true,
     rollupOptions: {
-      input: "index.html", // Đảm bảo đường dẫn đúng
+      input: {
+        main: "index.html",
+        authen: "authen.html",
+        screen: "screen.html",
+      },
     },
   },
   plugins: [glsl()],
